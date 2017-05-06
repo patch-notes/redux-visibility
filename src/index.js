@@ -1,24 +1,24 @@
 function crawler(node, observer) {
   const out = {};
 
-  if (observer != undefined &&
-      (!node._visibility || node._visibility.indexOf(observer) == -1)) {
-    return;
+  if (observer !== undefined &&
+      (!node._visibility || node._visibility.indexOf(observer) === -1)) {
+    return undefined;
   }
 
-  Object.keys(node).forEach(key => {
+  Object.keys(node).forEach((key) => {
     if (node[key] instanceof Object && !(node[key] instanceof Array)) {
       const val = crawler(node[key], observer);
       if (val) {
         out[key] = val;
       }
-    } else if (key !== '_visibility'){
+    } else if (key !== '_visibility') {
       out[key] = node[key];
     }
   });
 
   return out;
-};
+}
 
 export function setVisibility(state, observer) {
   const _visibility = (state._visibility !== undefined)
@@ -26,7 +26,7 @@ export function setVisibility(state, observer) {
                       : [observer];
   return {
     ...state,
-    _visibility
+    _visibility,
   };
 }
 
@@ -47,14 +47,14 @@ export function storeVisibility() {
   return createStore => (reducer, preloadedState, enhancer) => {
     const store = createStore(reducer, preloadedState, enhancer);
 
-    const getState = observer => {
+    const getState = (observer) => {
       const state = store.getState();
       return crawler(state, observer);
-    }
+    };
 
     return {
       ...store,
-      getState
-    }
-  }
+      getState,
+    };
+  };
 }
