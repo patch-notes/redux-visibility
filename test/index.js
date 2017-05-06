@@ -3,10 +3,6 @@ import { storeVisibility, clearVisibility, setVisibility } from '../src/index';
 import { expect } from 'chai';
 
 describe('Distributed state', () => {
-//  beforeEach(() => {
-//    store = createStore(store => store, {}, storeVisibility());
-//  });
-
   describe('basic functionality', () => {
     it('should create the store', () => {
       const store = createStore(store => store, {}, storeVisibility());
@@ -28,6 +24,22 @@ describe('Distributed state', () => {
       expect(state).to.be.deep.equal({
         test: 1,
         _visibility: ['observer', 'anotherObserver']
+      });
+    });
+
+    it('should clear visibility for one observer', () => {
+      const state = setVisibility({test: 1}, 'observer');
+      expect(clearVisibility(state, 'observer')).to.be.deep.equal({
+        test: 1
+      });
+    });
+
+    it('should clear visibility for more than one observer', () => {
+      let state = setVisibility({test: 1}, 'observer');
+      state = setVisibility({test: 1}, 'otherObserver');
+      expect(clearVisibility(state, 'observer')).to.be.deep.equal({
+        test: 1,
+        _visibility: ['otherObserver']
       });
     });
   });
@@ -70,6 +82,25 @@ describe('Distributed state', () => {
           array: [ 1, 2, 3 ],
         },
         otherObserver: { lastTest: 4 }
+      });
+    });
+  });
+
+  describe('actions and reducers', () => {
+    describe('with a simple reducer', () => {
+      const reducer = state => setVisibility(state, 'observer');
+      const store = createStore(reducer, { test: 1 }, storeVisibility());
+
+      it('should return all the state if no observer is specified', () => {
+        expect(store.getState()).to.be.deep.equal({ test: 1});
+      });
+
+      it('should return visible nodes', () => {
+        expect(store.getState('observer')).to.be.deep.equal({ test: 1 });
+      });
+
+      it('should not return invisible nodes', () => {
+        expect(store.getState('otherObserver')).to.be.equal(undefined)
       });
     });
   });

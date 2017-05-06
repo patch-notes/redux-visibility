@@ -1,4 +1,4 @@
-function crawler(observer, node) {
+function crawler(node, observer) {
   const out = {};
 
   if (observer != undefined &&
@@ -8,7 +8,7 @@ function crawler(observer, node) {
 
   Object.keys(node).forEach(key => {
     if (node[key] instanceof Object && !(node[key] instanceof Array)) {
-      const val = crawler(observer, node[key]);
+      const val = crawler(node[key], observer);
       if (val) {
         out[key] = val;
       }
@@ -31,14 +31,16 @@ export function setVisibility(state, observer) {
 }
 
 export function clearVisibility(state, observer) {
-  if (state._visibility === undefined) {
-    return;
+  const out = {
+    ...state,
+    _visibility: state._visibility.filter(o => o !== observer),
+  };
+
+  if (out._visibility.length === 0) {
+    delete out._visibility;
   }
 
-  const idx = state._visibility.indexOf(observer);
-  if (idx > -1) {
-    state._visibility.splice(idx, 1);
-  }
+  return out;
 }
 
 export function storeVisibility() {
@@ -47,7 +49,7 @@ export function storeVisibility() {
 
     const getState = observer => {
       const state = store.getState();
-      return crawler(observer, state);
+      return crawler(state, observer);
     }
 
     return {
