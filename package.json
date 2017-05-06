@@ -1,0 +1,19 @@
+{
+  "name": "redux-dstate",
+  "version": "0.0.1",
+  "description": "A distributed state for Redux",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --compilers babel-core/register"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "chai": "^3.5.0",
+    "mocha": "^3.3.0",
+    "redux": "^3.6.0"
+  }
+}
