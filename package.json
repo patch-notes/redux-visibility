@@ -6,8 +6,13 @@
   "scripts": {
     "test": "mocha --compilers babel-core/register",
     "lint": "eslint src test",
-    "build": "babel src --out-dir lib"
+    "build": "babel src --out-dir lib",
+    "prepublish": "npm run lint; npm run test; npm run build"
   },
+  "files": [
+    "lib",
+    "src"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
