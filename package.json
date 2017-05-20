@@ -1,5 +1,5 @@
 {
-  "name": "redux-dstate",
+  "name": "redux-visibility",
   "version": "0.0.1",
   "description": "A distributed state for Redux",
   "main": "lib/index.js",

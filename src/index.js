@@ -1,23 +1,27 @@
 function crawler(node, observer) {
-  const out = {};
+  if (node instanceof Object && !(node instanceof Array)) {
+    if (observer !== undefined &&
+        (!node._visibility || node._visibility.indexOf(observer) === -1)) {
+      return undefined;
+    }
 
-  if (observer !== undefined &&
-      (!node._visibility || node._visibility.indexOf(observer) === -1)) {
-    return undefined;
+    const out = {};
+
+    Object.keys(node).forEach((key) => {
+      if (key !== '_visibility') {
+        const val = crawler(node[key], observer);
+        if (val) {
+          out[key] = val;
+        }
+      }
+    });
+
+    return out;
+  } else if (node instanceof Array) {
+    return node.map(item => crawler(item, observer)).filter(item => item);
   }
 
-  Object.keys(node).forEach((key) => {
-    if (node[key] instanceof Object && !(node[key] instanceof Array)) {
-      const val = crawler(node[key], observer);
-      if (val) {
-        out[key] = val;
-      }
-    } else if (key !== '_visibility') {
-      out[key] = node[key];
-    }
-  });
-
-  return out;
+  return node;
 }
 
 export function setVisibility(state, observer) {
